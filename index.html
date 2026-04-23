@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>付費學員專屬直播間</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, sans-serif; text-align: center; background: #f4f4f4; color: #222; }
+    main { max-width: 960px; margin: 0 auto; padding: 1rem; }
+    h1 { font-size: clamp(1.25rem, 4vw, 1.75rem); margin-bottom: 1rem; }
+    .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000; }
+    .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+    .yt-corner-mask {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 260px;
+      height: 80px;
+      background: url("./logo遮罩.png") right bottom / 100% 100% no-repeat;
+      z-index: 3;
+      pointer-events: auto;
+    }
+    .interaction { margin-top: 1.25rem; }
+    .interaction iframe { width: 100%; height: min(600px, 70vh); border: 0; border-radius: 8px; background: #fff; }
+    #gate { padding: 2rem 1rem; }
+    #gate input { width: min(280px, 100%); padding: 0.65rem 0.75rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; margin: 0.5rem 0; }
+    #gate button { padding: 0.65rem 1.25rem; font-size: 1rem; border: 0; border-radius: 6px; background: #1a73e8; color: #fff; cursor: pointer; }
+    #gate button:hover { background: #1557b0; }
+    #gate .err { color: #c5221f; font-size: 0.9rem; min-height: 1.25rem; margin-top: 0.5rem; }
+    #content[hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <main>
+    <section id="gate" aria-labelledby="gate-title">
+      <h1 id="gate-title">付費學員專屬直播間</h1>
+      <p>請輸入通行密碼</p>
+      <form id="pass-form" autocomplete="off">
+        <input type="password" id="pass" name="pass" required placeholder="密碼" aria-label="通行密碼">
+        <div><button type="submit">進入直播</button></div>
+        <p class="err" id="err" role="alert"></p>
+      </form>
+    </section>
+
+    <section id="content" hidden aria-live="polite">
+      <h1>4/22 線上專業課程</h1>
+      <div class="video-container">
+        <iframe
+          title="YouTube 直播"
+          src="https://www.youtube-nocookie.com/embed/jfKfPfyJRdk?rel=0&modestbranding=1&fs=0&disablekb=1"
+          referrerpolicy="strict-origin-when-cross-origin"
+          sandbox="allow-scripts allow-same-origin allow-presentation"
+          allow="autoplay; encrypted-media; picture-in-picture"></iframe>
+        <div class="yt-corner-mask" aria-hidden="true"></div>
+      </div>
+      <div class="interaction">
+        <iframe title="Slido 互動" src="https://app.sli.do/event/tqpFsxBoP5NF9kbp9Y4eim"></iframe>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const ACCESS_HASH = '5ca3674a35fc1232e17d06943610e0e16e24fa682f5575f82b8f5a1ea1ba9239';
+
+    async function sha256Hex(text) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+      return Array.from(new Uint8Array(buf), b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    const gate = document.getElementById('gate');
+    const content = document.getElementById('content');
+    const err = document.getElementById('err');
+    const form = document.getElementById('pass-form');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      err.textContent = '';
+      const pass = document.getElementById('pass').value;
+      try {
+        const hex = await sha256Hex(pass);
+        if (hex === ACCESS_HASH.toLowerCase()) {
+          gate.hidden = true;
+          content.hidden = false;
+          document.getElementById('pass').value = '';
+        } else {
+          err.textContent = '密碼錯誤';
+        }
+      } catch {
+        err.textContent = '無法驗證（請使用 HTTPS 或本機開啟）';
+      }
+    });
+  </script>
+</body>
+</html>
