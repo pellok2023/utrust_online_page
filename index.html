@@ -9,27 +9,66 @@
     * { box-sizing: border-box; }
     body { margin: 0; font-family: system-ui, sans-serif; text-align: center; background: #f4f4f4; color: #222; }
     main { max-width: 960px; margin: 0 auto; padding: 1rem; }
-    h1 { font-size: clamp(1.25rem, 4vw, 1.75rem); margin-bottom: 1rem; }
+    h1 { font-size: clamp(1.25rem, 4vw, 1.75rem); margin: 0 0 1rem; line-height: 1.3; }
     .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000; }
     .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
     .yt-corner-mask {
       position: absolute;
       right: 0;
       bottom: 0;
-      width: 260px;
-      height: 80px;
+      width: clamp(140px, 32vw, 290px);
+      aspect-ratio: 290 / 80;
+      height: auto;
       background: url("./logo遮罩.png") right bottom / 100% 100% no-repeat;
       z-index: 3;
       pointer-events: auto;
     }
+    #content { display: block; }
     .interaction { margin-top: 1.25rem; }
-    .interaction iframe { width: 100%; height: min(600px, 70vh); border: 0; border-radius: 8px; background: #fff; }
+    .interaction iframe { width: 100%; height: 560px; border: 0; border-radius: 8px; background: #fff; }
     #gate { padding: 2rem 1rem; }
     #gate input { width: min(280px, 100%); padding: 0.65rem 0.75rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; margin: 0.5rem 0; }
     #gate button { padding: 0.65rem 1.25rem; font-size: 1rem; border: 0; border-radius: 6px; background: #1a73e8; color: #fff; cursor: pointer; }
     #gate button:hover { background: #1557b0; }
     #gate .err { color: #c5221f; font-size: 0.9rem; min-height: 1.25rem; margin-top: 0.5rem; }
     #content[hidden] { display: none !important; }
+    @media (max-width: 768px) {
+      html, body {
+        height: 100vh !important;
+        max-height: 100vh !important;
+        overflow: hidden !important;
+      }
+      body { overflow-y: hidden !important; }
+      main {
+        padding: 0.75rem;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        overflow: hidden !important;
+      }
+      h1 { font-size: clamp(1.1rem, 5.6vw, 1.4rem); margin-bottom: 0.55rem; }
+      .video-container { border-radius: 6px; }
+      #gate { padding: 1rem 0.75rem; }
+      #gate p { margin: 0.5rem 0; }
+      #gate input { margin: 0.35rem 0; }
+      #content {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 1.5rem);
+        overflow: hidden;
+      }
+      #content > h1 { flex: 0 0 auto; }
+      .video-container { flex: 0 0 auto; }
+      .interaction {
+        margin-top: 0.55rem;
+        flex: 1 1 auto;
+        min-height: 0;
+      }
+      .interaction iframe {
+        height: 100%;
+        min-height: 170px;
+        border-radius: 6px;
+      }
+    }
   </style>
 </head>
 <body>
